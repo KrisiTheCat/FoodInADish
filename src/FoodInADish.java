@@ -1,3 +1,9 @@
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 public class FoodInADish<T> extends DrawableObj implements Comparable<FoodInADish<T>>{
     T food;
     DishColor dishColor;
@@ -44,13 +50,21 @@ public class FoodInADish<T> extends DrawableObj implements Comparable<FoodInADis
     }
 
     int compareDouble(double a, double b){
-        if(a<b) return -1;
-        else if(a==b) return 0;
+        if(Double.compare(a,b)<0) return -1;
+        else if(Double.compare(a,b)==0) return 0;
         return 1;
     }
 
     @Override
-    public void draw() {
-
+    public JPanel draw() throws IOException {
+        //Image foodImg = new ImageIcon().getImage();
+        //graphics.drawImage(img, xCoord, yCoord, this);
+        JPanel panel = new JPanel();
+        System.out.println("resources/"+food.toString()+".png");
+        BufferedImage foodImg = ImageIO.read(new File("resources/"+food.toString()+".png"));
+        JLabel foodLbl = new JLabel(new ImageIcon(foodImg));
+        foodLbl.setBounds(0,0,FruitImages.valueOf(food.toString().toUpperCase()).width,FruitImages.valueOf(food.toString().toUpperCase()).height);
+        panel.add(foodLbl);
+        return panel;
     }
 }
