@@ -1,6 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.image.BufferedImage;
+import java.awt.*;
+import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -10,7 +11,7 @@ public class FoodInADish<T> extends DrawableObj implements Comparable<FoodInADis
 
     public FoodInADish() {
         this.food = (T) new Object();
-        this.dishColor = DishColor.BLACK;
+        this.dishColor = DishColor.DARKBLUE;
     }
 
     public FoodInADish(T food, DishColor dishColor) {
@@ -57,14 +58,38 @@ public class FoodInADish<T> extends DrawableObj implements Comparable<FoodInADis
 
     @Override
     public JPanel draw() throws IOException {
-        //Image foodImg = new ImageIcon().getImage();
-        //graphics.drawImage(img, xCoord, yCoord, this);
         JPanel panel = new JPanel();
-        System.out.println("resources/"+food.toString()+".png");
+        panel.setLayout(null);
+
         BufferedImage foodImg = ImageIO.read(new File("resources/"+food.toString()+".png"));
-        JLabel foodLbl = new JLabel(new ImageIcon(foodImg));
-        foodLbl.setBounds(0,0,FruitImages.valueOf(food.toString().toUpperCase()).width,FruitImages.valueOf(food.toString().toUpperCase()).height);
+        Image foodImg1 = makeWhiteBGToTransparent(foodImg);
+        JLabel foodLbl = new JLabel(new ImageIcon(foodImg1));
+        foodLbl.setBounds(0,0,200,100);
+
+        BufferedImage dishImg = ImageIO.read(new File("resources/"+dishColor.toString().toLowerCase()+".png"));
+        Image dishImg1 = makeWhiteBGToTransparent(dishImg);
+        JLabel dishLbl = new JLabel(new ImageIcon(dishImg1));
+        dishLbl.setBounds(0,40,200,100);
+
         panel.add(foodLbl);
+        panel.add(dishLbl);
         return panel;
+    }
+
+    public Image makeWhiteBGToTransparent(final BufferedImage im) {
+        final ImageFilter filter = new RGBImageFilter() {
+            public int markerRGB = 0xFFFFFFFF;
+
+            public final int filterRGB(final int x, final int y, final int rgb) {
+                if ((rgb | 0xFF000000) == markerRGB) {
+                    return 0x00FFFFFF & rgb;
+                } else {
+                    return rgb;
+                }
+            }
+        };
+
+        final ImageProducer ip = new FilteredImageSource(im.getSource(), filter);
+        return Toolkit.getDefaultToolkit().createImage(ip);
     }
 }

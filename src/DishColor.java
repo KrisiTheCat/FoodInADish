@@ -1,5 +1,6 @@
 public enum DishColor {
     GREEN,
+    YELLOW,
     BLUE,
-    BLACK
+    DARKBLUE
 }
